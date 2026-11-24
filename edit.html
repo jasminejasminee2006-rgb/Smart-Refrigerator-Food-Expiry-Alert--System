@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Food - Smart Refrigerator</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="card edit-card">
+
+            <h1>Edit Food Item</h1>
+
+            <p class="subtitle">
+                Update your food information
+            </p>
+
+
+            <form
+                action="/edit/{{ food['id'] }}"
+                method="POST"
+            >
+
+                <label>
+                    Food Name
+                </label>
+
+                <input
+                    type="text"
+                    name="food_name"
+                    value="{{ food['name'] }}"
+                    required
+                >
+
+
+                <label>
+                    Category
+                </label>
+
+                <select
+                    name="category"
+                    required
+                >
+
+                    <option
+                        value="Dairy"
+                        {% if food['category'] == 'Dairy' %}
+                        selected
+                        {% endif %}
+                    >
+                        Dairy
+                    </option>
+
+
+                    <option
+                        value="Fruits"
+                        {% if food['category'] == 'Fruits' %}
+                        selected
+                        {% endif %}
+                    >
+                        Fruits
+                    </option>
+
+
+                    <option
+                        value="Vegetables"
+                        {% if food['category'] == 'Vegetables' %}
+                        selected
+                        {% endif %}
+                    >
+                        Vegetables
+                    </option>
+
+
+                    <option
+                        value="Meat"
+                        {% if food['category'] == 'Meat' %}
+                        selected
+                        {% endif %}
+                    >
+                        Meat
+                    </option>
+
+
+                    <option
+                        value="Bakery"
+                        {% if food['category'] == 'Bakery' %}
+                        selected
+                        {% endif %}
+                    >
+                        Bakery
+                    </option>
+
+
+                    <option
+                        value="Packed Food"
+                        {% if food['category'] == 'Packed Food' %}
+                        selected
+                        {% endif %}
+                    >
+                        Packed Food
+                    </option>
+
+
+                    <option
+                        value="Other"
+                        {% if food['category'] == 'Other' %}
+                        selected
+                        {% endif %}
+                    >
+                        Other
+                    </option>
+
+                </select>
+
+
+                <label>
+                    Quantity
+                </label>
+
+                <input
+                    type="number"
+                    name="quantity"
+                    min="1"
+                    value="{{ food['quantity'] }}"
+                    required
+                >
+
+
+                <label>
+                    Storage Location
+                </label>
+
+                <select
+                    name="location"
+                    required
+                >
+
+                    <option
+                        value="Main Shelf"
+                        {% if food['location'] == 'Main Shelf' %}
+                        selected
+                        {% endif %}
+                    >
+                        Main Shelf
+                    </option>
+
+
+                    <option
+                        value="Door"
+                        {% if food['location'] == 'Door' %}
+                        selected
+                        {% endif %}
+                    >
+                        Door
+                    </option>
+
+
+                    <option
+                        value="Vegetable Box"
+                        {% if food['location'] == 'Vegetable Box' %}
+                        selected
+                        {% endif %}
+                    >
+                        Vegetable Box
+                    </option>
+
+
+                    <option
+                        value="Freezer"
+                        {% if food['location'] == 'Freezer' %}
+                        selected
+                        {% endif %}
+                    >
+                        Freezer
+                    </option>
+
+                </select>
+
+
+                <label>
+                    Expiry Date
+                </label>
+
+                <input
+                    type="date"
+                    name="expiry_date"
+                    value="{{ food['expiry'] }}"
+                    required
+                >
+
+
+                <button type="submit">
+                    Save Changes
+                </button>
+
+            </form>
+
+
+            <a
+                href="/"
+                class="back-button"
+            >
+                Back to Dashboard
+            </a>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

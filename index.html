@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Refrigerator</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <header>
+
+            <h1>Smart Refrigerator</h1>
+
+            <p>
+                Food Management and Expiry Alert System
+            </p>
+
+        </header>
+
+
+        <!-- Dashboard -->
+
+        <div class="dashboard">
+
+            <div class="box total-box">
+
+                <h3>Total Food</h3>
+
+                <strong>{{ total }}</strong>
+
+            </div>
+
+
+            <div class="box fresh-box">
+
+                <h3>Fresh</h3>
+
+                <strong>{{ fresh }}</strong>
+
+            </div>
+
+
+            <div class="box warning-box">
+
+                <h3>Near Expiry</h3>
+
+                <strong>{{ near_expiry }}</strong>
+
+            </div>
+
+
+            <div class="box expired-box">
+
+                <h3>Expired</h3>
+
+                <strong>{{ expired }}</strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- Add Food -->
+
+        <div class="card">
+
+            <h2>Add Food Item</h2>
+
+            <form action="/add" method="POST">
+
+                <label>Food Name</label>
+
+                <input
+                    type="text"
+                    name="food_name"
+                    placeholder="Example: Milk"
+                    required
+                >
+
+
+                <label>Category</label>
+
+                <select name="category" required>
+
+                    <option value="">
+                        Select Category
+                    </option>
+
+                    <option value="Dairy">
+                        Dairy
+                    </option>
+
+                    <option value="Fruits">
+                        Fruits
+                    </option>
+
+                    <option value="Vegetables">
+                        Vegetables
+                    </option>
+
+                    <option value="Meat">
+                        Meat
+                    </option>
+
+                    <option value="Bakery">
+                        Bakery
+                    </option>
+
+                    <option value="Packed Food">
+                        Packed Food
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+
+                <label>Quantity</label>
+
+                <input
+                    type="number"
+                    name="quantity"
+                    min="1"
+                    value="1"
+                    required
+                >
+
+
+                <label>Storage Location</label>
+
+                <select name="location" required>
+
+                    <option value="">
+                        Select Location
+                    </option>
+
+                    <option value="Main Shelf">
+                        Main Shelf
+                    </option>
+
+                    <option value="Door">
+                        Door
+                    </option>
+
+                    <option value="Vegetable Box">
+                        Vegetable Box
+                    </option>
+
+                    <option value="Freezer">
+                        Freezer
+                    </option>
+
+                </select>
+
+
+                <label>Expiry Date</label>
+
+                <input
+                    type="date"
+                    name="expiry_date"
+                    required
+                >
+
+
+                <button type="submit">
+                    Add Food
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- Food List -->
+
+        <div class="card">
+
+            <h2>Food Items</h2>
+
+
+            {% if foods %}
+
+                {% for food in foods %}
+
+                    <div class="food-item">
+
+                        <div class="food-info">
+
+                            <h3>
+                                {{ food.name }}
+                            </h3>
+
+                            <p>
+                                Category:
+                                <strong>
+                                    {{ food.category }}
+                                </strong>
+                            </p>
+
+                            <p>
+                                Quantity:
+                                <strong>
+                                    {{ food.quantity }}
+                                </strong>
+                            </p>
+
+                            <p>
+                                Location:
+                                <strong>
+                                    {{ food.location }}
+                                </strong>
+                            </p>
+
+                            <p>
+                                Expiry:
+                                <strong>
+                                    {{ food.expiry }}
+                                </strong>
+                            </p>
+
+
+                            {% if food.days_left < 0 %}
+
+                                <p class="expired-text">
+                                    Expired
+                                    {{ food.days_left|abs }}
+                                    days ago
+                                </p>
+
+
+                            {% elif food.days_left == 0 %}
+
+                                <p class="warning-text">
+                                    Expires Today
+                                </p>
+
+
+                            {% else %}
+
+                                <p>
+                                    {{ food.days_left }}
+                                    days remaining
+                                </p>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="food-actions">
+
+                            {% if food.status == "Fresh" %}
+
+                                <span class="status fresh">
+                                    Fresh
+                                </span>
+
+                            {% elif food.status == "Near Expiry" %}
+
+                                <span class="status warning">
+                                    Near Expiry
+                                </span>
+
+                            {% else %}
+
+                                <span class="status expired">
+                                    Expired
+                                </span>
+
+                            {% endif %}
+
+
+                            <a
+                                href="/edit/{{ food.id }}"
+                                class="edit-button"
+                            >
+                                Edit
+                            </a>
+
+
+                            <a
+                                href="/delete/{{ food.id }}"
+                                class="delete-button"
+                                onclick="return confirm('Are you sure you want to delete this food?')"
+                            >
+                                Delete
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+
+            {% else %}
+
+                <div class="empty">
+
+                    <h3>No Food Items</h3>
+
+                    <p>
+                        Add your first food item above.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- Temperature and Humidity -->
+
+        <div class="environment">
+
+            <div class="environment-card">
+
+                <h3>
+                    Temperature
+                </h3>
+
+                <strong>
+                    5 °C
+                </strong>
+
+                <p>
+                    Normal
+                </p>
+
+            </div>
+
+
+            <div class="environment-card">
+
+                <h3>
+                    Humidity
+                </h3>
+
+                <strong>
+                    60 %
+                </strong>
+
+                <p>
+                    Normal
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- Alerts -->
+
+        {% for food in foods %}
+
+            {% if food.status == "Near Expiry" %}
+
+                <div class="alert warning-alert">
+
+                    <strong>
+                        Expiry Alert!
+                    </strong>
+
+                    {{ food.name }}
+                    is nearing its expiry date.
+
+                </div>
+
+
+            {% elif food.status == "Expired" %}
+
+                <div class="alert expired-alert">
+
+                    <strong>
+                        Expired Food!
+                    </strong>
+
+                    {{ food.name }}
+                    has expired.
+
+                </div>
+
+            {% endif %}
+
+        {% endfor %}
+
+
+        <footer>
+
+            Smart Refrigerator System
+
+        </footer>
+
+    </div>
+
+</body>
+
+</html>
